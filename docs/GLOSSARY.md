@@ -1,0 +1,24 @@
+# Working glossary
+
+- **Expression:** code that produces a value; Kotlin if/when can be expressions.
+- **Type:** the set of values and operations accepted by a declaration.
+- **Nullable:** a type that permits absence (`String?`).
+- **Contract:** documented behavior, allowed inputs and promised outputs.
+- **Invariant:** a property that remains true during an algorithm or state transition.
+- **Module:** a Gradle subproject with its own source and dependencies.
+- **Gradle Wrapper:** checked-in launcher selecting a specific Gradle distribution.
+- **Test:** executable evidence comparing observed behavior to an expectation.
+- **Composable:** a function describing part of a Compose interface.
+- **Recomposition:** rerunning composable descriptions after observed state changes.
+- **State hoisting:** moving state ownership upward and passing values/events downward.
+- **Lifecycle:** creation, foreground/background and destruction of platform components.
+- **ViewModel:** Android state owner surviving configuration changes, not durable storage.
+- **Repository:** a boundary hiding data access details behind a domain-facing contract.
+- **Coroutine:** scoped asynchronous work that can suspend without blocking its thread.
+- **Dispatcher:** chooses where coroutine work executes.
+- **Flow:** asynchronous sequence of values; StateFlow holds current state.
+- **Source set:** code and dependencies compiled for a defined group of targets.
+- **expect/actual:** shared declaration with target-specific implementations.
+- **Framework:** an Apple-consumable compiled library, here Shared.framework.
+- **Tombstone:** a stored deletion record used to prevent synchronization resurrection.
+- **Idempotent:** repeating an operation has the same effect as applying it once.

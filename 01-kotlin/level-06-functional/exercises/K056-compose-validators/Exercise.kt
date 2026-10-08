@@ -1,0 +1,3 @@
+package k056
+
+fun <A, B, C> compose(f: (A) -> B, g: (B) -> C): (A) -> C = TODO("K056: Compose validators")
