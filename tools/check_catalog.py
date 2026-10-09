@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate curriculum IDs, dashboard data, and local Markdown links."""
+"""Validate curriculum IDs, generated hub content, and local Markdown links."""
 
 import json
 import re
@@ -15,10 +15,22 @@ for item in items:
 for track, count in [("Kotlin", 120), ("Android", 40), ("KMP", 30)]:
     assert sum(item["track"] == track for item in items) == count
 
-embedded = re.search(
-    r"const catalog=(.*);\nconst key=", (root / "progress.html").read_text()
-).group(1)
-assert json.loads(embedded) == items, "Dashboard and curriculum.json differ"
+hub_html = (root / "progress.html").read_text()
+embedded = re.search(r"const lessons = (.*);\n    const byId", hub_html).group(1)
+hub_lessons = json.loads(embedded)
+assert [
+    {key: lesson[key] for key in ("id", "track", "level", "title", "path", "description")}
+    for lesson in hub_lessons
+] == items, "Hub and curriculum.json differ"
+for lesson in hub_lessons:
+    assert lesson["context"] and lesson["sections"] and lesson["files"], lesson["id"]
+    assert all((root / link["path"]).is_file() for link in lesson["files"])
+    assert not re.search(
+        r"\b(?:hint|spoiler|reference|solution)\b|-Preference",
+        " ".join([lesson["context"], *(part["body"] for part in lesson["sections"])]),
+        re.IGNORECASE,
+    ), f"Answer material leaked into hub: {lesson['id']}"
+assert "__EMBEDDED_LESSONS__" not in hub_html
 
 checked_links = 0
 for document in root.rglob("*.md"):
@@ -32,6 +44,4 @@ for document in root.rglob("*.md"):
         path = target.split("#", 1)[0]
         assert (document.parent / path).exists(), f"Broken link in {document}: {target}"
 
-print(
-    f"Catalog OK: 190 unique learning units and {checked_links} local Markdown links."
-)
+print(f"Hub OK: 190 lessons, no answer material, {checked_links} local links.")

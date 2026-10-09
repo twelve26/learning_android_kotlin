@@ -1,8 +1,8 @@
 # Maintaining the laboratory
 
-Run tools/check_catalog.py for catalog integrity. Use tools/verify.sh kotlin, android, kmp or ios for reference checks. The iOS suite requires an installed simulator runtime. These commands compile learner projects only when the reference flag is removed; unfinished learner tests are expected to fail.
+After editing lesson Markdown or `curriculum.json`, run `python3 tools/build_hub.py` to refresh the embedded offline hub. The generator reads only learner-facing sections and excludes hints and answers. Run `python3 tools/check_catalog.py` for catalog and hub integrity. Use tools/verify.sh kotlin, android, kmp or ios for reference checks. The iOS suite requires an installed simulator runtime. These commands compile learner projects only when the reference flag is removed; unfinished learner tests are expected to fail.
 
-A complete release check includes: Kotlin references; Kotlin starter compilation; every Android starter/reference assembly; every Android domain reference test; KMP common tests on Android and iOS; Android host assemblies; Xcode simulator host builds; launch/interaction smoke checks; dashboard persistence/export/import; and local link validation.
+A complete release check includes: Kotlin references; Kotlin starter compilation; every Android starter/reference assembly; every Android domain reference test; KMP common tests on Android and iOS; Android host assemblies; Xcode simulator host builds; launch/interaction smoke checks; hub persistence/export/import; and local link validation.
 
 Reference and learner modes must never compile together. Test changing modes in both directions. A project property selects source directories; do not copy solutions into learner folders to validate them.
 

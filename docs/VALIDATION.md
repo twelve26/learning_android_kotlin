@@ -10,8 +10,9 @@ Validated on 2026-10-08 on an Apple Silicon Mac using Android Studio's JBR 25, A
 - All six KMP learner Android hosts and iOS simulator frameworks compiled.
 - All six KMP Android host test suites passed. Their Android host applications assembled.
 - All six KMP iOS simulator common test suites passed. All six checked-in Xcode hosts built for the arm64 simulator without signing, including the Swift observation/cancellation bridge and Compose Multiplatform host.
-- The catalog checker found 190 unique linked units: 120 Kotlin, 40 Android and 30 KMP. It also verifies that `curriculum.json` and the dashboard's embedded catalog agree.
-- The local dashboard rendered all units, filtered by search, saved completion through reload, and exposed notes plus JSON export/import controls.
+- The catalog checker found 190 unique linked units: 120 Kotlin, 40 Android and 30 KMP. It also verifies that `curriculum.json` and the generated hub catalog agree.
+- The hub generator embeds learner-facing context, tasks, acceptance criteria, run commands, and working-file links. The checker verifies that all 190 units have content, that every embedded file link exists, and that answer-related content is excluded.
+- The original progress dashboard was rendered and tested for search, completion persistence, notes, and JSON backup. The expanded hub passed JavaScript syntax and static content/link checks; its local-file UI was not visually tested because the integrated browser blocks `file:` URLs.
 - 904 local Markdown links were resolved against the source tree with no missing targets.
 
 ## Deliberate limits

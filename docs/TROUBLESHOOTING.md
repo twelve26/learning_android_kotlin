@@ -14,7 +14,7 @@
 | Xcode cannot find Shared | Inspect first failing Gradle build phase | Fix Java/SDK/Gradle error first; do not add arbitrary framework paths. |
 | Native tests have no destination | `xcrun simctl list devices available` | Install an iOS simulator runtime through Xcode. |
 | KMP compiler warns about Xcode | Check compatibility guide | Use a supported pair or document the actually verified result. |
-| Checklist appears reset | Browser/profile/file path changed | Import your exported JSON backup. |
+| Hub progress appears reset | Browser/profile/file path changed | Import your exported JSON backup. |
 | Browser blocks local storage | Dashboard shows warning | Use another browser or serve repository via localhost; export progress. |
 | Fixture HTTP fails | Server terminal and port 8765 | Use 10.0.2.2 from Android emulator, localhost from iOS simulator. |
 
@@ -25,4 +25,4 @@ From repository root:
 ```sh
 python3 -m http.server 8000 --bind 127.0.0.1
 ```
-Open http://localhost:8000/progress.html. Keep using the same origin for localStorage continuity. Stop with Ctrl+C. This server exposes only your repository to your own machine; do not bind to all network interfaces for routine use.
+Open http://localhost:8000/progress.html. Keep using the same origin for localStorage continuity. Stop with Ctrl+C. The hub itself needs no server; this option is only for browsers that restrict storage on local files. Do not bind to all network interfaces for routine use.

@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Learning Lab · Offline Hub</title>
+  <style>
+    :root { color-scheme: dark; --bg:#10151c; --panel:#18212b; --panel2:#202d39; --ink:#edf3f8; --muted:#a7b7c6; --line:#334454; --accent:#7ce8c2; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    button,input,select,textarea { font:inherit; }
+    button,select,input,textarea { color:var(--ink); background:var(--panel); border:1px solid var(--line); border-radius:9px; padding:10px 12px; }
+    button { cursor:pointer; }
+    button:hover,.lesson-item:hover { border-color:var(--accent); }
+    button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
+    a { color:var(--accent); }
+    h1,h2,h3,p { margin-top:0; }
+    h1 { font-size:clamp(32px,5vw,54px); line-height:1.05; letter-spacing:-.04em; margin-bottom:10px; }
+    h2 { font-size:25px; line-height:1.25; }
+    h3 { font-size:17px; margin-bottom:10px; }
+    p,.muted { color:var(--muted); }
+    .shell { max-width:1440px; margin:auto; padding:32px 28px 60px; }
+    .top { display:flex; justify-content:space-between; align-items:start; gap:24px; }
+    .eyebrow { color:var(--accent); text-transform:uppercase; letter-spacing:.15em; font-size:12px; font-weight:700; }
+    .top-links { display:flex; flex-wrap:wrap; gap:14px; padding-top:10px; }
+    .top-links a { white-space:nowrap; }
+    .overview { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:22px 0; }
+    .stat { padding:16px 18px; border:1px solid var(--line); border-radius:14px; background:var(--panel); }
+    .stat strong { display:block; font-size:26px; line-height:1.3; }
+    .stat span { color:var(--muted); font-size:13px; }
+    progress { display:block; width:100%; height:8px; margin-top:12px; accent-color:var(--accent); }
+    .notice { padding:12px 16px; margin:0 0 18px; border-left:3px solid var(--accent); background:var(--panel); color:var(--muted); }
+    .tools { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:16px; }
+    .tools button { background:var(--panel2); }
+    #status { min-height:24px; color:var(--accent); font-size:14px; }
+    .workbench { display:grid; grid-template-columns:minmax(290px,365px) minmax(0,1fr); gap:20px; align-items:start; }
+    .browser,.detail { border:1px solid var(--line); background:var(--panel); border-radius:16px; min-width:0; }
+    .browser { position:sticky; top:16px; max-height:calc(100vh - 32px); display:flex; flex-direction:column; overflow:hidden; }
+    .browser-head { padding:18px; border-bottom:1px solid var(--line); }
+    .browser-head h2 { font-size:20px; margin-bottom:14px; }
+    .filters { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .filters label { color:var(--muted); font-size:12px; display:flex; flex-direction:column; gap:4px; }
+    .filters label:first-child { grid-column:1/-1; }
+    .filters input,.filters select { width:100%; min-width:0; }
+    .count { color:var(--muted); font-size:12px; margin:12px 0 0; }
+    .lesson-list { overflow:auto; padding:8px; }
+    .group-title { color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.1em; padding:12px 10px 6px; }
+    .lesson-item { display:flex; align-items:start; gap:11px; width:100%; text-align:left; border:1px solid transparent; background:transparent; padding:10px; border-radius:10px; }
+    .lesson-item[aria-current="true"] { background:var(--panel2); border-color:var(--accent); }
+    .lesson-item .tick { color:var(--muted); width:20px; flex:none; }
+    .lesson-item.is-done .tick { color:var(--accent); }
+    .lesson-item small { display:block; color:var(--muted); line-height:1.35; }
+    .detail { padding:clamp(18px,3vw,34px); }
+    .detail-head { border-bottom:1px solid var(--line); padding-bottom:18px; margin-bottom:22px; }
+    .detail-head p { max-width:70ch; }
+    .detail-header-row { display:flex; justify-content:space-between; gap:16px; align-items:start; }
+    .complete { display:flex; align-items:center; gap:8px; white-space:nowrap; color:var(--ink); }
+    .complete input { width:20px; height:20px; accent-color:var(--accent); padding:0; }
+    .section { margin:0 0 26px; max-width:78ch; }
+    .section h3 { border-left:3px solid var(--accent); padding-left:11px; }
+    .section p { margin:0 0 9px; white-space:pre-wrap; overflow-wrap:anywhere; }
+    .section ol,.section ul { margin:4px 0 12px; padding-left:26px; color:var(--muted); }
+    .section li { margin:3px 0; }
+    .section code,.file-list code { background:#0c1118; color:#d1e8e0; border-radius:4px; padding:1px 4px; overflow-wrap:anywhere; }
+    pre { background:#0c1118; color:#d1e8e0; border:1px solid var(--line); padding:14px; overflow:auto; border-radius:9px; }
+    pre code { padding:0 !important; background:transparent !important; white-space:pre; }
+    .command { display:flex; align-items:start; gap:8px; }
+    .command pre { margin:0 0 10px; flex:1; }
+    .command button { flex:none; padding:8px 10px; }
+    .file-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:8px; list-style:none; padding:0; }
+    .file-list a { display:block; padding:11px; border:1px solid var(--line); border-radius:9px; text-decoration:none; overflow-wrap:anywhere; }
+    .file-list a:hover { background:var(--panel2); }
+    .file-list span { display:block; font-size:12px; color:var(--muted); margin-bottom:4px; }
+    textarea { display:block; width:100%; min-height:110px; resize:vertical; }
+    .lesson-nav { display:flex; gap:10px; justify-content:space-between; border-top:1px solid var(--line); padding-top:18px; }
+    .lesson-nav button { max-width:48%; }
+    footer { color:var(--muted); font-size:13px; margin-top:28px; }
+    @media (max-width:850px) { .top { display:block; } .workbench { grid-template-columns:1fr; } .browser { position:static; max-height:390px; } }
+    @media (max-width:600px) { .shell { padding:22px 14px 40px; } .overview { gap:7px; } .stat { padding:10px; } .stat strong { font-size:18px; } .stat span { font-size:11px; } .detail-header-row { display:block; } .complete { margin-top:14px; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="top">
+      <div><div class="eyebrow">Kotlin · Android · KMP</div><h1>Learning Lab</h1><p>Read the lesson, open its files, build it, and track your progress. Fully offline.</p></div>
+      <nav class="top-links" aria-label="Course documents"><a href="GUIDE.md">Full guide</a><a href="docs/SETUP.md">Setup</a><a href="docs/PRACTICE.md">How to practice</a></nav>
+    </header>
+    <section class="overview" id="overview" aria-label="Track progress"></section>
+    <p class="notice">The hub explains each task and links to the working files. Solutions and hints are deliberately absent. Progress and notes stay in this browser; export a backup before moving the folder.</p>
+    <div class="tools"><button id="export" type="button">Export progress</button><button id="import" type="button">Import backup</button><input type="file" id="file" accept="application/json,.json" hidden><span id="status" role="status" aria-live="polite"></span></div>
+    <div class="workbench">
+      <aside class="browser" aria-label="Lesson browser">
+        <div class="browser-head"><h2>Lessons</h2><div class="filters">
+          <label>Search<input id="search" type="search" placeholder="Topic, title, or ID"></label>
+          <label>Track<select id="track"><option value="">All tracks</option><option>Kotlin</option><option>Android</option><option>KMP</option></select></label>
+          <label>Status<select id="filter"><option value="">All lessons</option><option value="todo">To do</option><option value="done">Completed</option></select></label>
+        </div><div id="count" class="count" aria-live="polite"></div></div>
+        <div class="lesson-list" id="lesson-list"></div>
+      </aside>
+      <article class="detail" id="lesson-detail" aria-live="polite"></article>
+    </div>
+    <footer>Everything needed to browse this hub is contained in this file. The linked exercise files are in the repository beside it. Running Gradle and editing source remains in your IDE or terminal.</footer>
+  </main>
+  <script>
+    'use strict';
+    const lessons = __EMBEDDED_LESSONS__;
+    const byId = new Map(lessons.map(lesson => [lesson.id, lesson]));
+    const progressKey = 'learning-android-kotlin-progress-v1';
+    const $ = id => document.getElementById(id);
+    let progress = {version:1, done:{}, notes:{}};
+    let selectedId = null;
+
+    function node(tag, content, className) {
+      const element = document.createElement(tag);
+      if (content !== undefined) element.textContent = content;
+      if (className) element.className = className;
+      return element;
+    }
+    function normalize(value) {
+      if (!value || value.version !== 1 || !value.done || !value.notes || typeof value.done !== 'object' || typeof value.notes !== 'object') throw Error('This is not a version 1 progress backup.');
+      const clean = {version:1, done:{}, notes:{}};
+      for (const id of byId.keys()) {
+        if (value.done[id] === true) clean.done[id] = true;
+        if (typeof value.notes[id] === 'string') clean.notes[id] = value.notes[id].slice(0,10000);
+      }
+      return clean;
+    }
+    function save() {
+      try { localStorage.setItem(progressKey, JSON.stringify(progress)); }
+      catch { $('status').textContent = 'Local storage is unavailable. Export a backup before closing this page.'; }
+    }
+    try {
+      const stored = localStorage.getItem(progressKey);
+      if (stored) progress = normalize(JSON.parse(stored));
+    } catch { $('status').textContent = 'Saved progress could not be loaded. Import a backup if you have one.'; }
+
+    function renderOverview() {
+      const root = $('overview'); root.replaceChildren();
+      for (const track of ['Kotlin','Android','KMP']) {
+        const units = lessons.filter(x => x.track === track);
+        const done = units.filter(x => progress.done[x.id]).length;
+        const card = node('div', undefined, 'stat');
+        card.append(node('span',track),node('strong',`${done} / ${units.length}`));
+        const bar = node('progress'); bar.max = units.length; bar.value = done;
+        bar.setAttribute('aria-label',`${track}: ${done} of ${units.length} completed`);
+        card.append(bar); root.append(card);
+      }
+    }
+    function filteredLessons() {
+      const query = $('search').value.trim().toLowerCase();
+      const track = $('track').value, filter = $('filter').value;
+      return lessons.filter(x => (!track || x.track === track) &&
+        (!filter || (filter === 'done' ? !!progress.done[x.id] : !progress.done[x.id])) &&
+        (!query || `${x.id} ${x.title} ${x.description} ${x.context} ${x.sections.map(s=>s.body).join(' ')}`.toLowerCase().includes(query)));
+    }
+    function renderList() {
+      const list = $('lesson-list'); list.replaceChildren();
+      const visible = filteredLessons();
+      $('count').textContent = `Showing ${visible.length} of ${lessons.length} lessons`;
+      if (!visible.length) { list.append(node('p','No lessons match these filters.')); return; }
+      let lastGroup = '';
+      for (const lesson of visible) {
+        const group = `${lesson.track} · Level ${String(lesson.level).padStart(2,'0')}`;
+        if (group !== lastGroup) { list.append(node('div',group,'group-title')); lastGroup = group; }
+        const button = node('button',undefined,'lesson-item' + (progress.done[lesson.id] ? ' is-done' : ''));
+        button.type = 'button'; button.setAttribute('aria-current',lesson.id === selectedId ? 'true' : 'false');
+        button.append(node('span',progress.done[lesson.id] ? '✓' : '○','tick'));
+        const label = node('span'); label.append(node('strong',`${lesson.id} · ${lesson.title}`),node('small',lesson.description));
+        button.append(label);
+        button.addEventListener('click',() => selectLesson(lesson.id)); list.append(button);
+      }
+    }
+    function formatInline(text) {
+      // Markdown is deliberately rendered as text, never as trusted HTML.
+      const span = node('span');
+      for (const part of text.split(/(`[^`]+`)/g)) {
+        if (part.startsWith('`') && part.endsWith('`')) span.append(node('code',part.slice(1,-1)));
+        else span.append(document.createTextNode(part));
+      }
+      return span;
+    }
+    function renderBody(body, root) {
+      const lines = body.split('\n'); let list = null, code = [], inCode = false;
+      function flushCode() {
+        if (!code.length) return;
+        const pre = node('pre'), source = code.join('\n').trim(); pre.append(node('code',source));
+        const group = node('div',undefined,'command'); group.append(pre);
+        const copy = node('button','Copy','copy'); copy.type='button'; copy.setAttribute('aria-label','Copy command');
+        copy.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(source);copy.textContent='Copied';}catch{copy.textContent='Select and copy';}});
+        group.append(copy); root.append(group); code=[];
+      }
+      for (const raw of lines) {
+        const line = raw.trim();
+        if (line.startsWith('```')) { if (inCode) flushCode(); inCode = !inCode; list = null; continue; }
+        if (inCode) { code.push(raw); continue; }
+        if (!line) { list = null; continue; }
+        const match = line.match(/^(?:- |\d+\. )(.*)$/);
+        if (match) {
+          if (!list) { list = node('ul'); root.append(list); }
+          list.append(node('li')); list.lastChild.append(formatInline(match[1]));
+        } else {
+          list = null;
+          const p = node('p'); p.append(formatInline(line)); root.append(p);
+        }
+      }
+      if (inCode) flushCode();
+    }
+    function section(title, body) {
+      const block = node('section',undefined,'section'); block.append(node('h3',title));
+      renderBody(body,block); return block;
+    }
+    function renderDetail() {
+      const lesson = byId.get(selectedId), root = $('lesson-detail'); root.replaceChildren();
+      if (!lesson) { root.append(node('p','Select a lesson to begin.')); return; }
+      const header = node('div',undefined,'detail-head');
+      header.append(node('div',`${lesson.track} · Level ${String(lesson.level).padStart(2,'0')}`,'eyebrow'));
+      const row = node('div',undefined,'detail-header-row'); row.append(node('h2',`${lesson.id} — ${lesson.title}`));
+      const checkLabel = node('label',undefined,'complete');
+      const check = node('input'); check.type='checkbox'; check.checked=!!progress.done[lesson.id];
+      check.setAttribute('aria-label',`Mark ${lesson.id} complete`);
+      check.addEventListener('change',()=>{if(check.checked) progress.done[lesson.id]=true; else delete progress.done[lesson.id]; save(); renderOverview(); renderList();});
+      checkLabel.append(check,node('span','Completed')); row.append(checkLabel); header.append(row,node('p',lesson.description)); root.append(header);
+      root.append(section('About this level',lesson.context));
+      for (const part of lesson.sections) root.append(section(part.title,part.body));
+      const files = node('section',undefined,'section'); files.append(node('h3','Files to use'));
+      const links = node('ul',undefined,'file-list');
+      for (const file of lesson.files) {
+        const li = node('li'), anchor = node('a'); anchor.href=file.path;
+        anchor.append(node('span',file.label),node('code',file.path)); li.append(anchor); links.append(li);
+      }
+      files.append(links); root.append(files);
+      const notes = node('section',undefined,'section'); notes.append(node('h3','Practice notes'));
+      const area = node('textarea'); area.value = progress.notes[lesson.id] || ''; area.maxLength=10000;
+      area.placeholder='What did you learn? Which boundary did you test?';
+      area.setAttribute('aria-label',`Notes for ${lesson.id}`);
+      area.addEventListener('input',()=>{progress.notes[lesson.id]=area.value; save();});
+      notes.append(area); root.append(notes);
+      const index = lessons.findIndex(x=>x.id===lesson.id), nav=node('nav',undefined,'lesson-nav');
+      for (const [offset,label] of [[-1,'← Previous'],[1,'Next →']]) {
+        const target=lessons[index+offset]; if (!target) continue;
+        const button=node('button',`${label}: ${target.id}`);button.type='button';
+        button.addEventListener('click',()=>selectLesson(target.id));nav.append(button);
+      }
+      root.append(nav);
+    }
+    function selectLesson(id) {
+      if (!byId.has(id)) return;
+      selectedId=id;
+      if (location.hash.slice(1)!==id) history.replaceState(null,'',`#${encodeURIComponent(id)}`);
+      renderList(); renderDetail();
+      if (matchMedia('(max-width: 850px)').matches) $('lesson-detail').scrollIntoView({block:'start'});
+    }
+    for (const id of ['search','track','filter']) $(id).addEventListener('input',renderList);
+    window.addEventListener('hashchange',()=>selectLesson(decodeURIComponent(location.hash.slice(1))));
+    $('export').addEventListener('click',()=>{
+      const blob=new Blob([JSON.stringify(progress,null,2)],{type:'application/json'});
+      const url=URL.createObjectURL(blob), link=node('a'); link.href=url;
+      link.download=`progress-export-${new Date().toISOString().slice(0,10)}.json`;
+      link.click(); setTimeout(()=>URL.revokeObjectURL(url),1000);
+      $('status').textContent='Progress backup exported.';
+    });
+    $('import').addEventListener('click',()=>$('file').click());
+    $('file').addEventListener('change',async()=>{
+      const file=$('file').files[0]; if (!file) return;
+      try {
+        if (file.size>3000000) throw Error('Backup is too large.');
+        const imported=normalize(JSON.parse(await file.text()));
+        if (!confirm('Replace current local progress with this backup? Export first if you need to keep the current version.')) return;
+        progress=imported; save(); renderOverview();renderList();renderDetail();
+        $('status').textContent='Progress imported.';
+      } catch(error) { $('status').textContent=`Import failed: ${error.message}`; }
+      finally { $('file').value=''; }
+    });
+    renderOverview();
+    selectLesson(byId.has(decodeURIComponent(location.hash.slice(1))) ? decodeURIComponent(location.hash.slice(1)) : lessons[0].id);
+  </script>
+</body>
+</html>
