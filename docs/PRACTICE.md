@@ -4,7 +4,7 @@
 1. Open K001 in the offline hub. Read its exact output format and use the Files to use section to locate the exercise and test.
 2. Locate Exercise.kt. A function signature names its inputs and output type; TODO is an intentional placeholder that throws when called.
 3. Open the matching test. `assertEquals(expected, actual)` compares the required result with your function's result.
-4. Run the README command once before editing. Confirm the failure names K001, rather than an SDK or dependency problem.
+4. Click **Run K001 test** in the hub started with `python3 tools/start_hub.py`, or run the README command in a terminal. Confirm the failure names K001, rather than an SDK or dependency problem.
 5. Replace TODO with your implementation. Save and run the same command.
 6. If it fails, compare whitespace, capitalization and boundary assumptions. Use the debugger to inspect values.
 7. Add one more example. Only then compare the reference and write one sentence explaining your choice.

@@ -69,6 +69,12 @@
     .command { display:flex; align-items:start; gap:8px; }
     .command pre { margin:0 0 10px; flex:1; }
     .command button { flex:none; padding:8px 10px; }
+    .test-panel { border:1px solid var(--line); border-radius:12px; padding:16px; background:var(--panel2); }
+    .test-panel h3 { margin-bottom:6px; }
+    .test-panel button { background:var(--accent); color:#102018; border:0; font-weight:700; }
+    .test-panel button:disabled { opacity:.55; cursor:wait; }
+    .test-panel .result { margin:12px 0 0; color:var(--ink); }
+    .test-panel pre { max-height:420px; white-space:pre-wrap; overflow-wrap:anywhere; margin:10px 0 0; }
     .file-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:8px; list-style:none; padding:0; }
     .file-list a { display:block; padding:11px; border:1px solid var(--line); border-radius:9px; text-decoration:none; overflow-wrap:anywhere; }
     .file-list a:hover { background:var(--panel2); }
@@ -101,13 +107,15 @@
       </aside>
       <article class="detail" id="lesson-detail" aria-live="polite"></article>
     </div>
-    <footer>Everything needed to browse this hub is contained in this file. The linked exercise files are in the repository beside it. Running Gradle and editing source remains in your IDE or terminal.</footer>
+    <footer>The lesson catalog remains fully offline. Kotlin level 01 test buttons need the local runner: <code>python3 tools/start_hub.py</code>. Editing source remains in your IDE or terminal.</footer>
   </main>
   <script>
     'use strict';
     const lessons = __EMBEDDED_LESSONS__;
     const byId = new Map(lessons.map(lesson => [lesson.id, lesson]));
     const progressKey = 'learning-android-kotlin-progress-v1';
+    const runnerToken = '__RUNNER_TOKEN__';
+    const runnerAvailable = location.protocol === 'http:' && location.hostname === '127.0.0.1' && runnerToken !== '__RUNNER_TOKEN__';
     const $ = id => document.getElementById(id);
     let progress = {version:1, done:{}, notes:{}};
     let selectedId = null;
@@ -211,6 +219,35 @@
       const block = node('section',undefined,'section'); block.append(node('h3',title));
       renderBody(body,block); return block;
     }
+    function testPanel(lesson) {
+      const panel = node('section',undefined,'section test-panel');
+      panel.append(node('h3','Run this exercise’s test'));
+      if (!runnerAvailable) {
+        panel.append(node('p','Start the local runner from the repository root, then open the URL it prints:'));
+        const pre=node('pre'); pre.append(node('code','python3 tools/start_hub.py')); panel.append(pre);
+        return panel;
+      }
+      panel.append(node('p','Runs only this Kotlin level 01 test against your exercise code. A failed test is normal before you solve it.'));
+      const button=node('button',`Run ${lesson.id} test`); button.type='button';
+      const result=node('p','', 'result'); result.setAttribute('role','status');
+      const output=node('pre'); output.hidden=true;
+      button.addEventListener('click',async()=>{
+        button.disabled=true; result.textContent='Running the test…'; output.hidden=true;
+        try {
+          const response=await fetch('/api/test',{
+            method:'POST',headers:{'Content-Type':'application/json','X-Hub-Token':runnerToken},
+            body:JSON.stringify({id:lesson.id})
+          });
+          const data=await response.json();
+          if (!response.ok) throw Error(data.error || `HTTP ${response.status}`);
+          result.textContent=`${data.passed ? 'Passed' : data.timedOut ? 'Timed out' : 'Failed'} · ${data.durationSeconds}s`;
+          output.textContent=data.output || '(No output)'; output.hidden=false;
+        } catch(error) { result.textContent=`Could not run the test: ${error.message}`; }
+        finally { button.disabled=false; }
+      });
+      panel.append(button,result,output);
+      return panel;
+    }
     function renderDetail() {
       const lesson = byId.get(selectedId), root = $('lesson-detail'); root.replaceChildren();
       if (!lesson) { root.append(node('p','Select a lesson to begin.')); return; }
@@ -224,6 +261,7 @@
       checkLabel.append(check,node('span','Completed')); row.append(checkLabel); header.append(row,node('p',lesson.description)); root.append(header);
       root.append(section('About this level',lesson.context));
       for (const part of lesson.sections) root.append(section(part.title,part.body));
+      if (lesson.track === 'Kotlin' && lesson.level === 1) root.append(testPanel(lesson));
       const files = node('section',undefined,'section'); files.append(node('h3','Files to use'));
       const links = node('ul',undefined,'file-list');
       for (const file of lesson.files) {

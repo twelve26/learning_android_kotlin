@@ -7,7 +7,7 @@ An English, exercise-first laboratory for learning from fundamentals through app
 ## Start here
 1. Read [environment setup](docs/SETUP.md).
 2. Follow [the complete ordered guide](GUIDE.md).
-3. Open [the offline lesson hub](progress.html) in a browser. On macOS: `open progress.html`.
+3. Start the [offline lesson hub](progress.html) with `python3 tools/start_hub.py` from this folder. It opens a local page with one-click tests for Kotlin level 01. To browse lessons without test buttons, you can still open `progress.html` directly.
 4. Solve **K001** and run its test before continuing.
 
 ## The learning loop
@@ -35,3 +35,5 @@ Everything required uses local fixtures, platform tools or free dependencies. In
 - [Maintaining and verifying the course](docs/MAINTAINING.md)
 
 The hub contains every lesson's task, context, acceptance criteria, run commands and links to working files. Hints and answers are not embedded. Progress is private to the browser profile and this file origin. Export backups before moving the folder or switching browsers. Completion is self-reported, not automatic proof that tests passed.
+
+The local runner uses only Python's standard library, binds to `127.0.0.1`, and accepts only K001–K010 test IDs. It invokes the fixed Gradle test for the selected exercise and shows its output in the hub. Stop it with Ctrl+C. Opening `progress.html` as a file and opening it through the runner use different browser storage origins, so export/import a progress backup when switching between them.

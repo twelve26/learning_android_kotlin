@@ -14,7 +14,7 @@ Start with [SETUP](docs/SETUP.md) and [PRACTICE](docs/PRACTICE.md). Each linked 
 
 Within each level, follow numeric IDs. Alternatively complete each track sequentially, respecting prerequisites. After every level, pass its review gate; do not advance solely because a checkbox is checked. A revisit after a break is part of the route.
 
-The offline [lesson hub](progress.html) shows each lesson's context, mission, acceptance criteria, run commands, and working files in this order. It supports track/status filters, search, notes, and JSON backup without embedding hints or answers. Checkboxes are self-assessment; Gradle tests remain the executable feedback.
+The offline [lesson hub](progress.html) shows each lesson's context, mission, acceptance criteria, run commands, and working files in this order. Start it with `python3 tools/start_hub.py` to run Kotlin level 01 tests from lesson buttons. It supports track/status filters, search, notes, and JSON backup without embedding hints or answers. Checkboxes are self-assessment; Gradle tests remain the executable feedback.
 
 ## Kotlin route
 

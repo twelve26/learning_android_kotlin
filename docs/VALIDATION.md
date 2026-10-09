@@ -13,6 +13,7 @@ Validated on 2026-10-08 on an Apple Silicon Mac using Android Studio's JBR 25, A
 - The catalog checker found 190 unique linked units: 120 Kotlin, 40 Android and 30 KMP. It also verifies that `curriculum.json` and the generated hub catalog agree.
 - The hub generator embeds learner-facing context, tasks, acceptance criteria, run commands, and working-file links. The checker verifies that all 190 units have content, that every embedded file link exists, and that answer-related content is excluded.
 - The original progress dashboard was rendered and tested for search, completion persistence, notes, and JSON backup. The expanded hub passed JavaScript syntax and static content/link checks; its local-file UI was not visually tested because the integrated browser blocks `file:` URLs.
+- The local hub runner passed HTTP checks for session-token injection, same-origin and token enforcement, rejection of IDs outside K001–K010, and mapping each allowed ID to an existing test class. Running K001 through the actual Gradle command produced the expected `NotImplementedError` for its untouched learner starter. The button UI itself was not visually tested.
 - 904 local Markdown links were resolved against the source tree with no missing targets.
 
 ## Deliberate limits

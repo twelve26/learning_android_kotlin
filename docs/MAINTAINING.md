@@ -1,6 +1,6 @@
 # Maintaining the laboratory
 
-After editing lesson Markdown or `curriculum.json`, run `python3 tools/build_hub.py` to refresh the embedded offline hub. The generator reads only learner-facing sections and excludes hints and answers. Run `python3 tools/check_catalog.py` for catalog and hub integrity. Use tools/verify.sh kotlin, android, kmp or ios for reference checks. The iOS suite requires an installed simulator runtime. These commands compile learner projects only when the reference flag is removed; unfinished learner tests are expected to fail.
+After editing lesson Markdown or `curriculum.json`, run `python3 tools/build_hub.py` to refresh the embedded offline hub. The generator reads only learner-facing sections and excludes hints and answers. Run `python3 tools/check_catalog.py` for catalog and hub integrity. `tools/start_hub.py` serves the hub and runs only allowlisted K001–K010 learner tests; expand this list deliberately when adding button support. Use tools/verify.sh kotlin, android, kmp or ios for reference checks. The iOS suite requires an installed simulator runtime. These commands compile learner projects only when the reference flag is removed; unfinished learner tests are expected to fail.
 
 A complete release check includes: Kotlin references; Kotlin starter compilation; every Android starter/reference assembly; every Android domain reference test; KMP common tests on Android and iOS; Android host assemblies; Xcode simulator host builds; launch/interaction smoke checks; hub persistence/export/import; and local link validation.
 

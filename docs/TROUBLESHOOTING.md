@@ -15,14 +15,14 @@
 | Native tests have no destination | `xcrun simctl list devices available` | Install an iOS simulator runtime through Xcode. |
 | KMP compiler warns about Xcode | Check compatibility guide | Use a supported pair or document the actually verified result. |
 | Hub progress appears reset | Browser/profile/file path changed | Import your exported JSON backup. |
-| Browser blocks local storage | Dashboard shows warning | Use another browser or serve repository via localhost; export progress. |
+| Browser blocks local storage | Hub shows warning | Start `python3 tools/start_hub.py` and use its local URL; export progress first. |
 | Fixture HTTP fails | Server terminal and port 8765 | Use 10.0.2.2 from Android emulator, localhost from iOS simulator. |
 
 Never delete learner sources or reset Git to fix a build. Generated build directories can be regenerated, but investigate the first error before cleaning everything.
 
-## Optional localhost serving
+## Local hub runner
 From repository root:
 ```sh
-python3 -m http.server 8000 --bind 127.0.0.1
+python3 tools/start_hub.py
 ```
-Open http://localhost:8000/progress.html. Keep using the same origin for localStorage continuity. Stop with Ctrl+C. The hub itself needs no server; this option is only for browsers that restrict storage on local files. Do not bind to all network interfaces for routine use.
+The command prints and opens its local URL. It serves the hub, enables Kotlin level 01 test buttons, and uses a separate browser storage origin from `file:`. Export/import progress if you switch. Stop with Ctrl+C. If port 8766 is busy, pass `--port 8767`. The server binds only to `127.0.0.1`.
